@@ -9,11 +9,11 @@ source(here::here('R','make_atlantis_diagnostic_figures.R'))
 
 #Run name is the actual run name. Can be the same or different than run.prefix (e.g. "Fixed_Migration_ATL120")
 
-run.name = 'ReduceBenthicPred_6'
+run.name = runname
 
-atl.dir = paste0('C:/Users/joseph.caracappa/Documents/Atlantis/Obs_Hindcast/Atlantis_Runs/',run.name,'/')
+atl.dir = atlFolder
 param.dir = here::here('currentVersion')
-out.dir = paste0(atl.dir,'Post_Processed/')
+out.dir = outFolder
 
 
 #Run prefix is the filename prefix in the atlantis output (specified in run.bat)

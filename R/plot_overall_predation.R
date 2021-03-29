@@ -21,6 +21,7 @@ get_consumption = function(prod.file,fgs.file){
       next()
     }
     group.df.ls = list()
+    message(paste0("group ",i," of ",nrow(groups)))
     for(v in 1:length(group.eat)){
       age.var = colSums(ncvar_get(prod.nc,group.eat[v]))  
       if(grepl('_Eat',group.eat[v])){
@@ -39,10 +40,16 @@ get_consumption = function(prod.file,fgs.file){
                                      Consumption = age.var,
                                      stringsAsFactors = F)
       }
+      message(paste0("loop ",v," of ",length(group.eat)))
     }
-    consumption.all.ls[[i]] = dplyr::bind_rows(group.df.ls)
+
+
+  #  consumption.all.ls[[i]] = dplyr::bind_rows(group.df.ls)
+    consumption.all.ls[[i]] = do.call("rbind",group.df.ls)
   }
-  consumption.all = dplyr::bind_rows(consumption.all.ls)
+
+  #consumption.all = dplyr::bind_rows(consumption.all.ls)
+  consumption.all = do.call("rbind",consumption.all.ls)
   return(consumption.all)
 }
 
