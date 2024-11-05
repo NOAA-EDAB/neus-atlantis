@@ -2175,15 +2175,15 @@ SCAother_selcurve   0
 SCAnewbedford_selcurve     0
 SCAcapemay_selcurve     0
 SCAnewportnews_selcurve  0
-gfgloucester_selcurve    0
-gfnewbedford_selcurve  0
-gfpointjudith_selcurve  0
-gfboston_selcurve  0
-gfmontauk_selcurve  0
-gfportland_selcurve  0
-gfportsmouth_selcurve  0
-gfchatham_selcurve   0
-gfother_selcurve     0
+gfgloucester_selcurve    2
+gfnewbedford_selcurve  2
+gfpointjudith_selcurve  2
+gfboston_selcurve  2
+gfmontauk_selcurve  2
+gfportland_selcurve  2
+gfportsmouth_selcurve  2
+gfchatham_selcurve   2
+gfother_selcurve     2
 pseineBLF_selcurve  0
 cullPIN_selcurve    0
 ptrawlNSH_selcurve  0
@@ -5931,7 +5931,7 @@ k_covermowMA          30
 
 flagchangesel		 0
 
-## The number of se;lectivity changes for each fishery is given in YYY_sel_changes and the start (in days of the model run) of each change is given in SELchange_start_YYY.
+## The number of selectivity changes for each fishery is given in YYY_sel_changes and the start (in days of the model run) of each change is given in SELchange_start_YYY.
 
 catchall_sel_changes   1
 SCAother_sel_changes   1
@@ -6738,15 +6738,15 @@ SCAothersel_b   0
 SCAnewbedfordsel_b     0
 SCAcapemaysel_b     0
 SCAnewportnewssel_b  0
-gfgloucestersel_b    0
-gfnewbedfordsel_b  0
-gfpointjudithsel_b  0
-gfbostonsel_b  0
-gfmontauksel_b  0
-gfportlandsel_b  0
-gfportsmouthsel_b  0
-gfchathamsel_b   0
-gfothersel_b     0
+gfgloucestersel_b    0.1441718
+gfnewbedfordsel_b  0.1441718
+gfpointjudithsel_b  0.1441718
+gfbostonsel_b  0.1441718
+gfmontauksel_b  0.1441718
+gfportlandsel_b  0.1441718
+gfportsmouthsel_b  0.1441718
+gfchathamsel_b   0.1441718
+gfothersel_b     0.1441718
 pseineBLFsel_b  0
 cullPINsel_b    0
 ptrawlNSHsel_b  0
@@ -6766,15 +6766,15 @@ SCAothersel_lsm   0
 SCAnewbedfordsel_lsm     0
 SCAcapemaysel_lsm     0
 SCAnewportnewssel_lsm  0
-gfgloucestersel_lsm    0
-gfnewbedfordsel_lsm  0
-gfpointjudithsel_lsm  0
-gfbostonsel_lsm  0
-gfmontauksel_lsm  0
-gfportlandsel_lsm  0
-gfportsmouthsel_lsm  0
-gfchathamsel_lsm   0
-gfothersel_lsm     0
+gfgloucestersel_lsm    32.6211107
+gfnewbedfordsel_lsm  32.6211107
+gfpointjudithsel_lsm  32.6211107
+gfbostonsel_lsm  32.6211107
+gfmontauksel_lsm  32.6211107
+gfportlandsel_lsm  32.6211107
+gfportsmouthsel_lsm  32.6211107
+gfchathamsel_lsm   32.6211107
+gfothersel_lsm     32.6211107
 pseineBLFsel_lsm  0
 cullPINsel_lsm    0
 ptrawlNSHsel_lsm  0
