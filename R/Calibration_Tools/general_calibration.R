@@ -13,7 +13,7 @@ experiment.id = 'test'
 # setup.df = read.csv(here::here('Setup_Files','cloud_v6681_ddepend_1_setup.csv'),as.is=T)
 setup.df = read.csv(here::here('diagnostics','cloud_calibration_setup_example.csv'))
 model.dir = here::here('')
-output.dir = '/atlantisdisk/calibration/'
+output.dir = '/atlantisdisk/test1/'
 
 #Define base files
 bio.file.orig = here::here('currentVersion','at_biology.prm')
@@ -99,6 +99,7 @@ possible.types = unique(read.csv(here::here('diagnostics','cloud_calibration_set
 #Loop through run id's
 i=1
 out.df = list()
+# for(i in 1:length(run.id)){
 for(i in 1:length(run.id)){
   
   #copy biology.prm with run.id prefix
