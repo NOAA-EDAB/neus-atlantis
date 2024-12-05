@@ -9,11 +9,11 @@
 library(dplyr)
 
 #Read in setup file
-
-experiment.id = 'ddepend_1'
-setup.df = read.csv(here::here('Setup_Files','cloud_v6681_ddepend_1_setup.csv'),as.is=T)
-# setup.df = read.csv(here::here('diagnostics','cloud_calibration_setup_example.csv'))
-proj.dir = '/contrib/Joseph.Caracappa/calibration/'
+experiment.id = 'test'
+# setup.df = read.csv(here::here('Setup_Files','cloud_v6681_ddepend_1_setup.csv'),as.is=T)
+setup.df = read.csv(here::here('diagnostics','cloud_calibration_setup_example.csv'))
+model.dir = here::here('')
+output.dir = '/atlantisdisk/test1/'
 
 #Define base files
 bio.file.orig = here::here('currentVersion','at_biology.prm')
@@ -22,7 +22,8 @@ sbatch.orig = here::here('currentVersion','sbatch_scenario_array_base.sh')
 fgs.file = here::here('currentVersion','neus_groups.csv')
 mig.file.orig = here::here('currentVersion','neus_migrations.csv')
 run.prm.orig = here::here('currentVersion','at_run.prm')
-
+harvest.file.orig = here::here('currentVersion','at_harvest.prm')
+fleets.file = here::here('currentVersion','neus_fisheries.csv')
 
 #Read in functional groups and define inverts
 fgs = read.csv(fgs.file,as.is = T)
@@ -77,14 +78,20 @@ if(any(c('aMigSize','jMigSize','aMigSurvive','jMigSurvive') %in% setup.df$Type))
 if('InitScalar' %in% setup.df$Type){
   source(here::here('R','Calibration_Tools','edit_param_init_scalar.R'))
 }
-
-if(any(c('ddepend','k.roc.food','roc.wgt') %in% setup.df$Type)){
-
+if(any(c('ddepend','k.roc.food','roc.wgt','speed') %in% setup.df$Type)){
   source(here::here('R','Calibration_Tools','edit_param_ddepend.R'))
 }
 if(any(c('max.temp','min.temp','max.salt','min.salt') %in% setup.df$Type)){
   source(here::here('R','Calibration_Tools','edit_param_env_move.R'))
-
+}
+if(any('q' %in% setup.df$Type)){
+  source(here::here('R','Calibration_Tools','edit_param_q.R'))
+}
+if(any('sel' %in% setup.df$Type)){
+  source(here::here('R','Calibration_Tools','edit_param_sel.R'))
+}
+if(any(c('selcurve','tstart','mindepth','maxdepth','sweptarea') %in% setup.df$Type)){
+  source(here::here('R','Calibration_Tools','edit_param_fleet.R'))
 }
 
 possible.types = unique(read.csv(here::here('diagnostics','cloud_calibration_setup_example.csv'),as.is=T)$Type)
@@ -92,6 +99,7 @@ possible.types = unique(read.csv(here::here('diagnostics','cloud_calibration_set
 #Loop through run id's
 i=1
 out.df = list()
+# for(i in 1:length(run.id)){
 for(i in 1:length(run.id)){
   
   #copy biology.prm with run.id prefix
@@ -116,7 +124,15 @@ for(i in 1:length(run.id)){
   }else{
     run.prm.short = 'at_run.prm'
   }
-
+  
+  if(any(c('q','sel','selcurve','tstart','mindepth','maxdepth','sweptarea') %in% setup.df$Type)){
+    #copy harvest.prm with run.id prefix
+    harvest.file.short = paste0('at_harvest_',run.id[i],'.prm')
+    harvest.file.new = here::here('currentVersion',harvest.file.short)
+    file.copy(harvest.file.orig,harvest.file.new,overwrite =T)
+  }else{
+    harvest.file.short = 'at_harvest.prm'
+  }
 
   #Separate task for run.id
   setup.run = dplyr::filter(setup.df, Run.ID == run.id[i])
@@ -382,9 +398,7 @@ for(i in 1:length(run.id)){
     if(setup.run$Type[j] == 'InitScalar'){
       
       edit_param_init_scalar(run.prm = run.prm.new,
-
-                             groups.file = groups.file,
-
+                             groups.file = fgs.file,
                              group.name = setup.run$Code[j],
                              unit = setup.run$Unit[j],
                              value = setup.run$Value[j],
@@ -392,9 +406,7 @@ for(i in 1:length(run.id)){
       
     }
     
-
-    if(setup.run$Type[j] %in% c('ddepend','k.roc.food','roc.wgt')){
-
+    if(setup.run$Type[j] %in% c('ddepend','k.roc.food','roc.wgt','speed')){
       
       if(setup.run$Unit[j] == 'scalar'){
         stop('ddepend parameters only setup for Unit = "value"')
@@ -414,9 +426,7 @@ for(i in 1:length(run.id)){
       if(setup.run$Type[j]%in% c('min.temp','max.temp')){
         env.var = 'temperature'
       }else if(setup.run$Type[j] %in% c('min.salt','max.salt')){
-
-        env.var = 'salt'
-
+        env.var = 'salinity'
       }
       
       edit_param_env_move(bio.file = bio.file.new,
@@ -427,7 +437,55 @@ for(i in 1:length(run.id)){
                           overwrite = T)
     }
     
-
+    if(setup.run$Type[j] == 'sel'){
+      
+      if(setup.run$Unit[j] == 'scalar'){
+        stop('Fleet Selectivity only setup for Unit = "value"')
+      }
+    
+      code.split = strsplit(setup.run$Code[j],':')[[1]]
+      edit_param_sel(
+        harvest.file = harvest.file.new,
+        Code = code.split[1],
+        Fleet = code.split[2],
+        fleets.file = fleets.file,
+        Value = setup.run$Value[j],
+        overwrite =T
+      )
+    }
+    
+    if(setup.run$Type[j] == 'q'){
+      
+      if(setup.run$Unit[j] == 'scalar'){
+        stop('Fleet Selectivity only setup for Unit = "value"')
+      }
+      
+      code.split = strsplit(setup.run$Code[j],':')[[1]]
+      edit_param_q(
+        harvest.file = harvest.file.new,
+        Code = code.split[1],
+        Fleet = code.split[2],
+        fleets.file = fleets.file,
+        Value = setup.run$Value[j],
+        overwrite =T
+      )
+    }
+    
+    if(setup.run$Type[j] %in% c('selcurve','tstart','mindepth','maxdepth','sweptarea')){
+      
+      if(setup.run$Unit[j] == 'scalar'){
+        stop('Fleet Selectivity only setup for Unit = "value"')
+      }
+      
+      edit_param_fleet(
+        harvest.file = harvest.file.new,
+        Fleet = setup.run$Code[j],
+        Value = setup.run$Value[j],
+        VarName = setup.run$Type[j],
+        overwrite =T
+      )
+    }
+    
   }
   
   #Write shell script
@@ -438,9 +496,7 @@ for(i in 1:length(run.id)){
   #Edit shell script
   run.sh.new.lines = readLines(run.sh.new)
   run.command.line = grep('atlantisMerged',run.sh.new.lines)
-
-  run.command.new =  paste0('atlantisMerged -i neus_init.nc 0 -o neus_output.nc -r ',run.prm.short,' -f at_force_LINUX.prm -p at_physics.prm -b ',bio.file.short,' -h at_harvest.prm -e at_economics.prm -s neus_groups.csv -q neus_fisheries.csv -m ',mig.file.short,' -t . -d output')
-
+  run.command.new =  paste0('atlantisMerged -i neus_init.nc 0 -o neus_output.nc -r ',run.prm.short,' -f at_force_LINUX.prm -p at_physics.prm -b ',bio.file.short,' -h ',harvest.file.short,' -e at_economics.prm -s neus_groups.csv -q neus_fisheries.csv -m ',mig.file.short,' -t . -d output')
   run.sh.new.lines[run.command.line] = run.command.new
   
   writeLines(run.sh.new.lines,con = run.sh.new)
@@ -454,11 +510,11 @@ for(i in 1:length(run.id)){
 system('sudo chmod -R 775 *')
 
 out.df = bind_rows(out.df)
-write.csv(out.df, paste0(proj.dir,'Setup_Files/',experiment.id,'_setup.csv'),row.names = F)
+write.csv(out.df, paste0(model.dir,'Setup_Files/',experiment.id,'_setup.csv'),row.names = F)
 
 
-base.sbatch.array = paste0(proj.dir,'currentVersion/sbatch_scenario_array_base.sh')
-new.sbatch.array =  paste0(proj.dir,'currentVersion/sbatch_',experiment.id,'.sh')
+base.sbatch.array = paste0(model.dir,'currentVersion/sbatch_scenario_array_base.sh')
+new.sbatch.array =  paste0(model.dir,'currentVersion/sbatch_',experiment.id,'.sh')
 file.copy(base.sbatch.array,new.sbatch.array,overwrite = T)
 
 #replace max array number
@@ -467,10 +523,10 @@ new.array.line = paste0('#SBATCH --array=1-',length(run.id))
 sbatch.lines[grep('--array',sbatch.lines)] = new.array.line
 
 #replace directories
-new.mkdir = paste0("sudo mkdir -p ",proj.dir,"Atlantis_Runs/",experiment.id,"/",experiment.id,"_$SLURM_ARRAY_TASK_ID")
+new.mkdir = paste0("sudo mkdir -p ",output.dir,"Atlantis_Runs/",experiment.id,"/",experiment.id,"_$SLURM_ARRAY_TASK_ID")
 sbatch.lines[grep('mkdir',sbatch.lines)] = new.mkdir
 
-new.singularity = paste0( "sudo singularity exec --bind ",proj.dir,"currentVersion:/app/model,",proj.dir,"Atlantis_Runs/",experiment.id,"/",experiment.id,"_$SLURM_ARRAY_TASK_ID:/app/model/output /contrib/atlantisCode/atlantis6681.sif /app/model/RunAtlantis_$SLURM_ARRAY_TASK_ID.sh")
+new.singularity = paste0( "sudo singularity exec --bind ",model.dir,"currentVersion:/app/model,",output.dir,"Atlantis_Runs/",experiment.id,"/",experiment.id,"_$SLURM_ARRAY_TASK_ID:/app/model/output /model/atlantisCode/atlantis6681.sif /app/model/RunAtlantis_$SLURM_ARRAY_TASK_ID.sh")
 sbatch.lines[grep('singularity',sbatch.lines)] = new.singularity
 
 writeLines(sbatch.lines,new.sbatch.array)

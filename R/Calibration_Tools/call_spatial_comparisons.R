@@ -5,13 +5,8 @@ library(dplyr)
 ## Read in and format reference file
 
 
-
-# ref.data = readRDS(here::here('data','spatial_reference_survdat_2011_2021.rds'))%>%
-#   filter(statistic == 'proportion' & var.name == 'biomass')
-
 ref.data = readRDS(here::here('data','spatial_reference_survdat_2011_2021.rds'))%>%
   filter(statistic == 'proportion' & var.name == 'biomass')
-
 
 # ref.data.run = readRDS('/net/work3/EDAB/atlantis/Shared_Data/Dev_Runs/Dev_6681_20240620/Post_Processed/Data/biomass_box.rds')%>%
 #   filter(time>30)%>%
@@ -33,22 +28,22 @@ ref.data = readRDS(here::here('data','spatial_reference_survdat_2011_2021.rds'))
 init.data = readRDS(here::here('data','spatial_reference_initial_conditions.rds'))%>%
   filter(statistic == 'proportion' & var.name == 'biomass')
 
+set.prefix = 'SCA_newdist_1_'
+run.names = paste0(set.prefix,1:16)
 
-set.prefix = 'NE_Groundish_Test'
-# run.names = paste0(set.prefix,1:24)
-run.names = c('Dev_6681_20240620','NE_groundfish_new_movement')
-run.dirs = c('/net/work3/EDAB/atlantis/Shared_Data/Dev_Runs/Dev_6681_20240620/',
-             paste0(here::here('Atlantis_Runs','NE_groundfish_new_movement')))
-
-# run.sets = list(1:6,7:12,13:18,19:24)
-run.sets = 1:2
+# run.names = c('Dev_6681_20240905','SCA_Dist_1')
+# run.dirs = c('/net/work3/EDAB/atlantis/Shared_Data/Dev_Runs/Dev_6681_20240905/',
+             # paste0(here::here('Atlantis_Runs','SCA_Dist_1')))
+run.dirs = paste0(here::here('Atlantis_Runs',run.names))
+run.sets = list(1:4,5:8,9:12,13:16)
 j=1
 
 do.processing = T
 for(j in 1:length(run.sets)){
   
   run.names.set = run.names[run.sets[[j]]]
-  out.name = paste0(set.prefix,run.sets[[j]][1],'-',run.sets[[j]][length(run.sets[[j]])])
+  # out.name = paste0(set.prefix,run.sets[[j]][1],'-',run.sets[[j]][length(run.sets[[j]])])
+  out.name = paste0(set.prefix,run.sets[[j]][1])
   
   i=1
   for(i in 1:length(run.names.set)){
@@ -105,7 +100,6 @@ for(j in 1:length(run.sets)){
     out.dir = here::here('Figures','/'),
     out.name = out.name,
     param.ls = get_atl_paramfiles(param.dir = here::here('currentVersion'),
-
                                   atl.dir = run.dirs[1],
                                   run.prefix = 'neus_output',
                                   include_catch = T
@@ -113,9 +107,9 @@ for(j in 1:length(run.sets)){
     data.type = 'proportion',
     comparison.type = 'difference',
     ref.years = 2:4,
-
     plot =T
   )
+  
   
 }
 
@@ -129,7 +123,7 @@ atlantisprocessing::compare_spatial_vars(
   ref.data = ref.data,
   init.data = init.data,
   out.dir = here::here('Figures','/'),
-  out.name = 'NE_Groundfish_rescale_20_60',
+  out.name = 'SCA_Dist_1',
   param.ls = get_atl_paramfiles(param.dir = here::here('currentVersion'),
                                 atl.dir = run.dirs[1],
                                 run.prefix = 'neus_output',
@@ -137,8 +131,7 @@ atlantisprocessing::compare_spatial_vars(
   ),
   data.type = 'proportion',
   comparison.type = 'difference',
-  ref.years = 20:60,
+  ref.years = c(20,60),
   plot =T
 )
-
 
