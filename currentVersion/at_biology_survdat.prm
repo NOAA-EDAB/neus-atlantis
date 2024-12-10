@@ -153,11 +153,11 @@ larvae_connect_only 0
 
 #RM added 4 following parameters 20180530 based on new code _6338
 # whether larvae are independent of environmental conditions (do not reset recruit_hdistrib based on environmental conditions like temperature)
-enviro_independ_larvae 1
+enviro_independ_larvae 0
 
 # Flag indicating the rough age of larvae effected by environmental conditions (i.e. when to reset recruit_hdistrib based on environmental conditions like temperature). This is only important if enviro independ larvae is set to 0
 # 0=effects are calculated at the time of spawning; 1=effects are calculated at the start of the recruitment period 
-flag_recruit_effect 1
+flag_recruit_effect 0
 
 # whether to use a dynamically changing ratio between reserve and structural mass or only a fixed value (as in the standard Atlantis code), 0=static, 1=dynamic
 flag_dynamicXRS 0
@@ -5247,14 +5247,14 @@ VERTnight_INV2	4
 # Swimming speed of FPS                             m.hr-1       12500
 Speed_MAK 12500
 Speed_HER 12500
-Speed_WHK 2500
+Speed_WHK 0
 Speed_BLF 10800
-Speed_WPF 1500
+Speed_WPF 0
 Speed_SUF 10800
-Speed_WIF 1500
-Speed_WTF 1500
-Speed_HAL 3000
-Speed_PLA 1100
+Speed_WIF 0
+Speed_WTF 0
+Speed_HAL 0
+Speed_PLA 0
 Speed_FOU 10800
 Speed_FLA 10800
 Speed_BFT 18000
@@ -5267,25 +5267,25 @@ Speed_BPF 12500
 Speed_GOO 10000
 Speed_MEN 15000
 Speed_FDE 15000
-Speed_COD 1900
+Speed_COD 0
 Speed_SHK 15000
 Speed_OHK 10000
-Speed_POL 2500
+Speed_POL 0
 Speed_RHK 10000
 Speed_BSB 10000
 Speed_SCU 10000
 Speed_TYL 10000
-Speed_RED 1900
-Speed_OPT 1000
+Speed_RED 0
+Speed_OPT 0
 Speed_SAL 10000
 Speed_DRM 10000
 Speed_STB 10000
 Speed_TAU 10000
-Speed_WOL 1000
+Speed_WOL 0
 Speed_SDF 10000
 Speed_FDF 10000
-Speed_HAD 2200
-Speed_YTF 1500
+Speed_HAD 0
+Speed_YTF 0
 Speed_DOG 10000
 Speed_SMO 12500
 Speed_SSH 12500
