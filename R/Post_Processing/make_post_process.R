@@ -146,6 +146,7 @@ make_post_process = function(run.name,
 
 
     # plot.catch.fleet = plot.catch.fleet,
+    plot.catch = plot.catch,
 
     plot.mortality=plot.mortality,
     plot.weight = plot.weight
