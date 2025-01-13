@@ -9,13 +9,13 @@
 # VarName = 'sweptarea'
 # Value = 2
 
-edit_param_fleet = function(harvest.file, Fleet, VarName, Value, units, overwrite, new.file.name){
+edit_param_fleet = function(harvest.file, Fleet, VarName, Value, Unit, overwrite, new.file.name){
   
   harvest.lines = readLines(harvest.file)
   
   which.var = grep(paste0(Fleet,'_',VarName),harvest.lines)
   
-  if(units == 'value'){
+  if(Unit == 'value'){
     new.val = paste0(Fleet,'_',VarName,' ',Value)  
   }else{
     old.line =grep(paste0(Fleet,'_',VarName),harvest.lines, value = T)
